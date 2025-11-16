@@ -46,10 +46,8 @@ def send_mail(servidor_email, dest, name):
     msg['To'] = dest
 
     msg.set_content(
-        f'Opaaaa, beleza??\n'
-        f'Esse é o e-mail com o nome do seu amigo secreto :)\n'
-        f'Para confirmar que recebeu, mande uma mensagem no WhatsApp para o Iguinho ou o Vini (Não vai falar o nome do seu amigo secreto emm hahaha).\n'
-        f'Seu amigo secreto é: {name}'
+        f'<Add_message>\n'
+        f'Seu amigo secreto é: {name}' # Linha com o nome do amigo secreto sorteado
     )
 
     servidor_email.sendmail(msg['From'], [dest], msg.as_string())
