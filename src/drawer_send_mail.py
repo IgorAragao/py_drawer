@@ -41,8 +41,8 @@ def conn_close(conexao):
 def send_mail(servidor_email, dest, name):
 
     msg = EmailMessage()
-    msg['Subject'] = 'Amigo secreto ??/12'
-    msg['From'] = 'pydrawer@gmail.com'
+    msg['Subject'] = '<add_assunto>'
+    msg['From'] = '<add_email_remetente>'
     msg['To'] = dest
 
     msg.set_content(
