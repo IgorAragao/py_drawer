@@ -24,7 +24,7 @@ O script `drawer_send_mail.py` tem como objetivo sortear nomes e enviar via e-ma
 
 1. Adicionar no arquivo `user_map.py` os nomes e e-mails das pessoas participantes
 2. Adicionar um e-mail, dentro do script `drawer_send_mail.py`, que será o remetente do sorteio
-  * lembre-se que para enviar e-mail a partir de um app, como esse, é preciso criar uma senha de app no gmail
+   * lembre-se que para enviar e-mail a partir de um app, como esse, é preciso criar uma senha de app no gmail
 3. Criar uma mensagem que será enviada no e-mail dos destinatários e adicioná-la na variável `html` dentro do script `drawer_send_mail.py`
 4. Executar o `drawer_send_mail.py`
 
