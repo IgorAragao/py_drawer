@@ -1,104 +1,86 @@
 import random
 import smtplib
 from email.message import EmailMessage
+from user_map import people # mapping of names and emails
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
-# variavel que acomoda os emails para envio dos nomes
-emails_destinatarios = input("Insira os emails (gmail) destinatarios separados por espaço: ").split()
-
-
-# variavel que acomoda os emails que ja foram enviados
-emails_ja_enviados = []
-
-
-# variavel que acomoda os nomes a serem sorteados
-names_input = input("Digite os nomes a serem sorteados separados por espaço: ").split()
-
-
-# variavel que acomoda os nomes que ja foram sorteados
-names_drawn = []
-
-
-def conn_mail():
+def conn_email():
     try:
-        servidor_email = smtplib.SMTP('smtp.gmail.com', 587)
-        servidor_email.starttls()
-        servidor_email.login('<add_email>', 'add_password_app') # adicionar email gmail
-        return servidor_email
+        email_server = smtplib.SMTP('smtp.gmail.com', 587)
+        email_server.starttls()
+        email_server.login('add_sender_email', 'add_password') # add mail gmail
+        return email_server
     except Exception as err:
         print(f"[ERROR] ❌ {err}")
         return None
 
 
-def conn_close(conexao):
-    if conexao is None:
-        print("[ERROR] ❌ Conexão de email não estabelecida!")
+def conn_close(conn):
+    if conn is None:
+        print("[ERROR] ❌ Email connection not established!")
     else:
-        print("[INFO] Conexão encerrada!")
-        conexao.quit()
+        print("[INFO] Emails sent and connection closed!")
+        conn.quit()
 
 
-def send_mail(servidor_email, dest, name):
-
-    msg = EmailMessage()
-    msg['Subject'] = '<add_assunto>'
-    msg['From'] = '<add_email_remetente>'
+def send_mail(email_server, dest, name):
+    msg = MIMEMultipart()
+    msg['From'] = 'add_sender_email'
     msg['To'] = dest
+    msg['Subject'] = 'add_subject'
 
-    msg.set_content(
-        f'<Add_message>\n'
-        f'Seu amigo secreto é: {name}' # Linha com o nome do amigo secreto sorteado
-    )
+    # message body -- add your messagem below, between <body> and </body>
+    html = """ 
+    <html>
+    <body>
 
-    servidor_email.sendmail(msg['From'], [dest], msg.as_string())
+    Add your message here!!
+    <br>
+    <br>
+    Your secret friend is: <b>"""+name+"""</b>
+
+    </body>
+    </html>
+    """
+    
+    msg_html = MIMEText(html, 'html')
+    msg.attach(msg_html)
+
+    email_server.sendmail(msg['From'], dest, msg.as_string())
+
+
+def sort_names():
+    p = people
+    random.shuffle(p)
+
+    return p
 
 
 def drawer():
-    conexao = conn_mail()
+    conn = conn_email()
 
     try:
-        if conexao is not None:
 
-            while len(names_input) > 0:
-                start = input('Sortear? (Sim ou Não): ')
+        if conn != None:
+            people_sort = sort_names()
 
-                if start.lower() == 'sim':
-
-                    num_name = random.randrange(0, len(names_input))
-                    name = names_input[num_name]
-
-                    names_drawn.append(name)
-
-                    num_mail =  random.randrange(0, len(emails_destinatarios))
-                    email = emails_destinatarios[num_mail]
-                    send_mail(conexao, email, name)
-                    emails_ja_enviados.append(email)
-
-
-                    emails_destinatarios.remove(email)
-                    names_input.remove(name)
-
-                    print(f'Nome sorteado: {name}')
-                    print(f'Nomes já sorteados: {names_drawn}')
-                    print(f'Nomes faltantes: {names_input}')
-
-                    print(f'email enviado: {email}')
-                    print(f'email já enviado: {emails_ja_enviados}')
-                    print(f'email faltantes: {emails_destinatarios}')
-
-
+            i = 0
+            while i < len(people_sort):
+                if i == len(people_sort) - 1 :
+                    send_mail(conn, people_sort[i]["email"], people_sort[0]["name"])
                 else:
-                    print('py_drawer encerrado!')
-                    exit()
-
+                    send_mail(conn, people_sort[i]["email"], people_sort[i+1]["name"])
+                i = i + 1
         else:
             exit()
 
     except Exception as err:
-        print(f"[ERROR] ❌ Falha ao enviar o email: {err}")
+        print(f"[ERROR] ❌ Failed to send email: {err}")
 
     finally:
-        conn_close(conexao)
+        conn_close(conn)
 
 
 def main():
